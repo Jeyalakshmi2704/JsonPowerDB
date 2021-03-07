@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en">
+    <head>
+        <title>Bootstrap Example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+        src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+        <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Vertical (basic) form</h2>
+            <form id="empForm" method="post">
+                <div id="employee1">
+                    <div class="form-group">
+                        <span><label for="empId1">Employee ID:</label> <label id="empIdMsg">
+                            </label></span>
+                        <input type="text" class="form-control" name="empId" id="empId1"
+                               placeholder="Enter Employee ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="empName1">Employee Name:</label>
+                        <input type="text" class="form-control" id="empName1"
+                               placeholder="Enter Employee Name" name="empName">
+                    </div>
+                    <div class="form-group">
+                        <label for="empEmail1">Email:</label>
+                        <input type="email" class="form-control" id="empEmail1"
+                               placeholder="Enter Employee Email" name="empEmail">
+                    </div>
+                </div >
+                <div id="employee2">
+                    <div class="form-group">
+                        <span><label for="empId2">Employee ID:</label> <label id="empIdMsg">
+                            </label></span>
+                        <input type="text" class="form-control" name="empId" id="empId2"
+                               placeholder="Enter Employee ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="empName2">Employee Name:</label>
+                        <input type="text" class="form-control" id="empName2"
+                               placeholder="Enter Employee Name" name="empName">
+                    </div>
+                    <div class="form-group">
+                        <label for="empEmail2">Email:</label>
+                        <input type="email" class="form-control" id="empEmail2"
+                               placeholder="Enter Employee Email" name="empEmail">
+                    </div>
+                </div >
+                <input type="button" class="btn btn-primary" id="empAdd" value="Add"
+                       onclick="addEmployee();">
+
+                <input type="button" class="btn btn-primary" id="empSave" value="Save"
+                       onclick="saveEmployee();">
+            </form>
+        </div>
+        <script>
+            $("#empId1").focus();
+            $("#employee2").hide();
+
+            function addEmployee() {
+                $("#employee2").show();
+            }
+
+            function validateAndGetFormData() {
+                var empIdVar1 = $("#empId1").val();
+                if (empIdVar1 === "") {
+                    alert("Employee ID Required Value");
+                    $("#empId1").focus();
+                    return "";
+                }
+                var empNameVar1 = $("#empName1").val();
+                if (empNameVar1 === "") {
+                    alert("Employee Name is Required Value");
+                    $("#empName1").focus();
+                    return "";
+                }
+                var empEmailVar1 = $("#empEmail1").val();
+                if (empEmailVar1 === "") {
+                    alert("Employee Email is Required Value");
+                    $("#empEmail1").focus();
+                    return "";
+                }
+                var empIdVar2 = $("#empId2").val();
+                if (empIdVar2 === "") {
+                    alert("Employee ID Required Value");
+                    $("#empId2").focus();
+                    return "";
+                }
+                var empNameVar2 = $("#empName2").val();
+                if (empNameVar2 === "") {
+                    alert("Employee Name is Required Value");
+                    $("#empName2").focus();
+                    return "";
+                }
+                var empEmailVar2 = $("#empEmail2").val();
+                if (empEmailVar2 === "") {
+                    alert("Employee Email is Required Value");
+                    $("#empEmail2").focus();
+                    return "";
+                }
+                var jsonStrObj;
+                if ($("#employee2").is(":visible")) {
+                    jsonStrObj = [{
+                            empId: empIdVar1,
+                            empName: empNameVar1,
+                            empEmail: empEmailVar1,
+                        }, {
+                            empId: empIdVar2,
+                            empName: empNameVar2,
+                            empEmail: empEmailVar2,
+                        }
+                    ];
+                } else
+                {
+                    jsonStrObj = {
+                        empId: empIdVar1,
+                        empName: empNameVar1,
+                        empEmail: empEmailVar1,
+                    };
+                }
+
+                return JSON.stringify(jsonStrObj);
+            }
+            // This method is used to create PUT Json request.
+            function resetForm() {
+                $("#empId1").val("");
+                $("#empName1").val("");
+                $("#empEmail1").val("");
+                $("#empId2").val("");
+                $("#empName2").val("");
+                $("#empEmail2").val("");
+                $("#empId1").focus();
+                $("#employee2").hide();
+            }
+            function createPUTALLRequest(connToken, jsonObj, dbName, relName) {
+                var putRequest = "{\n"
+                        + "\"token\" : \""
+                        + connToken
+                        + "\","
+                        + "\"dbName\": \""
+                        + dbName
+                        + "\",\n" + "\"cmd\" : \"PUT_ALL\",\n"
+                        + "\"rel\" : \""
+                        + relName + "\","
+                        + "\"jsonStr\": \n"
+                        + jsonObj
+                        + "\n"
+                        + "}";
+                return putRequest;
+            }
+
+            function saveEmployee() {
+                var jsonStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                alert(1);
+                var putReqStr;
+                if ($("#employee2").is(":visible")) {
+                    alert(2);
+                    putReqStr = createPUTALLRequest("90935301|-31948838755918459|90934291",
+                            jsonStr, "SAMPLE", "EMP-REL");
+                } else {
+                    alert(3);
+                    putReqStr = createPUTRequest("90935301|-31948838755918459|90934291",
+                            jsonStr, "SAMPLE", "EMP-REL");
+                        }    alert(putReqStr);
+                    jQuery.ajaxSetup({async: false});
+                    var resultObj = executeCommandAtGivenBaseUrl(putReqStr,
+                            "http://api.login2explore.com:5577", "/api/iml");
+                    alert(JSON.stringify(resultObj));
+                
+                jQuery.ajaxSetup({async: true});
+                resetForm();
+            }
+        </script>
+    </body>
+</html>

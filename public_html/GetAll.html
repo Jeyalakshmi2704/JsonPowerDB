@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Get All Records</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+        <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+        src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+        <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+
+        <div>
+            <input type="button" class="btn btn-primary" id="Show" value="Show"
+                   onclick="showEmployee();">
+            <table id="employees" class="display" width="100%"></table>
+        </div>
+        <script>
+            function showEmployee() {
+                var getAllRequest = createGETALLRequest("90935301|-31948838755918459|90934291", "SAMPLE", "EMP-REL", 1, 5, true, true);
+                alert(getAllRequest);
+                jQuery.ajaxSetup({async: false});
+                var resultObj = executeCommand(getAllRequest,
+                        "/api/irl");
+                var obj = JSON.parse(JSON.stringify(resultObj));
+                
+                var data=JSON.parse(JSON.stringify(obj.data));
+                alert(data);
+                alert(data.file_status);
+                var jsondata=JSON.parse(JSON.stringify(data));
+                //alert(jsondata);
+                //var stringJSON = JSON.stringify(resultObj);
+                
+                //alert(stringArray);
+                // alert(resultObj.split('['));
+                //var data=eval("("+resultObj+")");
+                //alert(data);
+                //alert(data.json_records);
+                alert(JQuery.parseJSON(resultObj));
+                var data = JQuery.parseJSON(resultObj);
+                $('#employees').DataTable({
+                    data: data,
+                    columns: [
+                        {title: "empId"},
+                        {title: "empName"},
+                        {title: "empEmail"}
+                    ]
+                });
+            }
+
+            function createGETALLRequest(connToken, dbName, relName, pageNo, pageSize, createTime, updatedTime) {
+                var putRequest = "{\n"
+                        + "\"token\" : \""
+                        + connToken
+                        + "\",\n"
+                        + "\"dbName\" : \""
+                        + dbName
+                        + "\",\n" + "\"cmd\" : \"GET_ALL\",\n"
+                        + "\"rel\" : \""
+                        + relName + "\",\n"
+                        + "\"pageNo\" : "
+                        + pageNo + ",\n"
+                        + "\"pageSize\" : "
+                        + pageSize + ",\n"
+                        + "\"createTime\" : "
+                        + createTime + ",\n"
+                        + "\"updateTime\" : "
+                        + updatedTime
+                        + "\n"
+                        + "}";
+                return putRequest;
+            }
+
+        </script>
+    </body>
+</html>
